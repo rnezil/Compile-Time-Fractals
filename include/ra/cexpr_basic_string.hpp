@@ -6,6 +6,9 @@
 
 #include <cstddef>
 #include <iostream>
+#include <cstring>
+#include <stdexcept>
+#include <initializer_list>
 
 namespace ra::cexpr {
 	//std::size_t represents a size in bytes that is the maximum size 
@@ -50,18 +53,30 @@ namespace ra::cexpr {
 		~cexpr_basic_string() = default;
 
 		//Creates a string with the contents given by the null-terminated character array pointed to by s. If the string does not have sufficient capacity to hold the character data provided, throw an exception of type std::run_error
-		constexpr cexpr_basic_string( const value_type* s );
-
+		constexpr cexpr_basic_string( const value_type* s ) : string_ {s} {
+		}
+		
 		//Function for debugging
+		
 		void print_ascii() const {
-			for( std::size_t i {0}; i < M; ++i ){
-				std::cout << (unsigned)string_[i] << " ";
+			/*for( std::size_t i {0}; i < M+1; ++i ){
+				std::cout << (unsigned)*(string_+i) << " ";
+			}
+			std::cout << "\n";
+			for( std::size_t i {0}; *(string_+i) != value_type(0); ++i ){
+				std::cout << *(string_+i);
+			}
+			std::cout << "\n";
+			*/
+			//std::cout << "First letter: " << *string_ << "\n";
+			for( std::size_t i {0}; i < M && *(string_+i) != value_type(0); ++i) {
+				std::cout << *(string_+i);
 			}
 			std::cout << "\n";
 		}
 	private:
-		//Underlying array for storing characters
-		value_type string_[M+1];
+		//Underlying storage member
+		const_pointer string_;
 	};
 
 	template<std::size_t M>
