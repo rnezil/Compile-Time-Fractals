@@ -6,9 +6,8 @@
 
 #include <cstddef>
 #include <iostream>
-#include <cstring>
 #include <stdexcept>
-#include <initializer_list>
+#include <locale>
 
 namespace ra::cexpr {
 	//std::size_t represents a size in bytes that is the maximum size 
@@ -54,10 +53,28 @@ namespace ra::cexpr {
 
 		//Creates a string with the contents given by the null-terminated character array pointed to by s. If the string does not have sufficient capacity to hold the character data provided, throw an exception of type std::run_error
 		constexpr cexpr_basic_string( const value_type* s ) : string_ {s} {
+			std::size_t i {0};
+			while( (i < M+1) && (*(s+i) != value_type(0)) ) {
+				++i;
+			}//prototype oversize check
+			if( i == M+1 ){
+				oversize();
+			}	
+		}	
+
+		constexpr void oversize() const {
+			const std::runtime_error wide_load {};
+			throw wide_load;
 		}
-		
+/*
+		constexpr cexpr_basic_string( const_iterator first, const_iterator last ): string_ {first} {
+			std::size_t i {0};
+			while( (i < M+1) && (first + i != last) ){
+				++i;
+			}
+		}
+*/
 		//Function for debugging
-		
 		void print_ascii() const {
 			/*for( std::size_t i {0}; i < M+1; ++i ){
 				std::cout << (unsigned)*(string_+i) << " ";
