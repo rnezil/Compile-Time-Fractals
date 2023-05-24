@@ -88,8 +88,6 @@ namespace ra::cexpr {
 
 		const value_type* data() const { return string_; }
 
-
-
 		//Function for debugging
 		void print_ascii() const {
 			for( std::size_t i {0}; i < M && *(string_+i) != value_type(0); ++i) {

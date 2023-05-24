@@ -27,5 +27,7 @@ int main(){
 	std::cout << "Constd string capacity: " << constd_string_capacity << "\n";
 	std::cout << "Iter string size: " << iter_string_size << "\n";
 	std::cout << "Iter string capacity: " << iter_string_capacity << "\n";
+	const char* booboo = constd_string.data();
+	std::cout << "Constd string data (const version): " << *booboo << "\n";
 	return 0;
 }
