@@ -29,5 +29,8 @@ int main(){
 	std::cout << "Iter string capacity: " << iter_string_capacity << "\n";
 	const char* booboo = constd_string.data();
 	std::cout << "Constd string data (const version): " << *booboo << "\n";
+	ra::cexpr::cexpr_basic_string<char, 50> clank("Why did the chicken cross the road"?);
+	char* doodoo = clank.data();
+	std::cout << "Clank data (non const version): " << *doodoo << "\n";
 	return 0;
 }

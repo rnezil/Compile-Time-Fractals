@@ -84,7 +84,9 @@ namespace ra::cexpr {
 			return i;
 		}
 		
-		value_type* data() { return string_; }
+		value_type* data() {
+			
+		}
 
 		const value_type* data() const { return string_; }
 
