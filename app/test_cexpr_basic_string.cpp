@@ -15,7 +15,7 @@ int main(){
 	iter_string.print_ascii();
 	constexpr std::size_t maximum = ra::cexpr::cexpr_basic_string<char, 69>::max_size();
 	std::cout << "Maximum size: " << maximum << "\n";
-	constexpr std::size_t empty_string_size = empty_string.capacity();
+	constexpr std::size_t empty_string_size = empty_string.size();
 	constexpr std::size_t empty_string_capacity = empty_string.capacity();
 	constexpr std::size_t constd_string_size = constd_string.size();
 	constexpr std::size_t constd_string_capacity = constd_string.capacity();

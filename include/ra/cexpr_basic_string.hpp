@@ -7,7 +7,6 @@
 #include <cstddef>
 #include <iostream>
 #include <stdexcept>
-#include <locale>
 
 namespace ra::cexpr {
 	//std::size_t represents a size in bytes that is the maximum size 
@@ -40,7 +39,7 @@ namespace ra::cexpr {
 		using const_iterator = const_pointer;
 
 		//Creates an empty string
-		constexpr cexpr_basic_string() : string_{value_type(0)} {}
+		constexpr cexpr_basic_string() : string_{""} {}
 
 		//Copy constructor
 		constexpr cexpr_basic_string( const cexpr_basic_string& )= default;
