@@ -4,8 +4,8 @@
 
 int main(){
 	constexpr ra::cexpr::cexpr_basic_string<char, 4> empty_string;
-	//empty_string.print_ascii();
-	constexpr const char* c = "Oh hello there!";
+	empty_string.print_ascii();
+	constexpr const char* c = "Oh hello there!!!";
 	constexpr ra::cexpr::cexpr_basic_string<char, 20> constd_string(c);
 	constd_string.print_ascii();
 	//ra::cexpr::cexpr_basic_string<char, 6> oversized_string(c);
@@ -13,5 +13,19 @@ int main(){
 	constexpr const char* end = start + 9;
 	constexpr ra::cexpr::cexpr_basic_string<char, 20> iter_string(start, end);
 	iter_string.print_ascii();
+	constexpr std::size_t maximum = ra::cexpr::cexpr_basic_string<char, 69>::max_size();
+	std::cout << "Maximum size: " << maximum << "\n";
+	constexpr std::size_t empty_string_size = empty_string.capacity();
+	constexpr std::size_t empty_string_capacity = empty_string.capacity();
+	constexpr std::size_t constd_string_size = constd_string.size();
+	constexpr std::size_t constd_string_capacity = constd_string.capacity();
+	constexpr std::size_t iter_string_size = iter_string.size();
+	constexpr std::size_t iter_string_capacity = iter_string.capacity();
+	std::cout << "Empty string size: " << empty_string_size << "\n";
+	std::cout << "Empty string capacity: " << empty_string_capacity << "\n";
+	std::cout << "Constd string size: " << constd_string_size << "\n";
+	std::cout << "Constd string capacity: " << constd_string_capacity << "\n";
+	std::cout << "Iter string size: " << iter_string_size << "\n";
+	std::cout << "Iter string capacity: " << iter_string_capacity << "\n";
 	return 0;
 }

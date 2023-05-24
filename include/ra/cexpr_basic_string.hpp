@@ -40,7 +40,7 @@ namespace ra::cexpr {
 		using const_iterator = const_pointer;
 
 		//Creates an empty string
-		constexpr cexpr_basic_string() : string_{} {}
+		constexpr cexpr_basic_string() : string_{value_type(0)} {}
 
 		//Copy constructor
 		constexpr cexpr_basic_string( const cexpr_basic_string& )= default;
@@ -53,7 +53,7 @@ namespace ra::cexpr {
 
 		//Creates a string with the contents given by the null-terminated character array pointed to by s. If the string does not have sufficient capacity to hold the character data provided, throw an exception of type std::run_error
 		constexpr cexpr_basic_string( const value_type* s ) : string_ {s} {
-			std::size_t i {0};
+			size_type i {0};
 			while( (i < M+1) && (*(s+i) != value_type(0)) ) {
 				++i;
 			}//prototype oversize check
@@ -63,14 +63,33 @@ namespace ra::cexpr {
 		}	
 
 		constexpr cexpr_basic_string( const_iterator first, const_iterator last ): string_ {first} {
-			std::size_t i {0};
+			size_type i {0};
 			while( (i < M+1) && (first + i != last) ){
 				++i;
 			}
 			if( i == M+1 ){
 				throw std::runtime_error {"Wide load error"};
 			}
+			//add guards for aliasing, ie if first == last
 		}
+
+		static constexpr size_type max_size() { return M; }
+
+		constexpr size_type capacity() const { return M; }
+
+		constexpr size_type size() const {
+			size_type i {0};
+			while( *(string_ + i) != value_type(0) ) {
+				++i;
+			}
+			return i;
+		}
+		
+		value_type* data() { return string_; }
+
+		const value_type* data() const { return string_; }
+
+
 
 		//Function for debugging
 		void print_ascii() const {
