@@ -58,36 +58,28 @@ namespace ra::cexpr {
 				++i;
 			}//prototype oversize check
 			if( i == M+1 ){
-				oversize();
+				throw std::runtime_error {"Wide load error"};
 			}	
 		}	
 
-		constexpr void oversize() const {
-			const std::runtime_error wide_load {};
-			throw wide_load;
-		}
-/*
 		constexpr cexpr_basic_string( const_iterator first, const_iterator last ): string_ {first} {
 			std::size_t i {0};
 			while( (i < M+1) && (first + i != last) ){
 				++i;
 			}
+			if( i == M+1 ){
+				throw std::runtime_error {"Wide load error"};
+			}
 		}
-*/
+
 		//Function for debugging
 		void print_ascii() const {
-			/*for( std::size_t i {0}; i < M+1; ++i ){
-				std::cout << (unsigned)*(string_+i) << " ";
-			}
-			std::cout << "\n";
-			for( std::size_t i {0}; *(string_+i) != value_type(0); ++i ){
-				std::cout << *(string_+i);
-			}
-			std::cout << "\n";
-			*/
-			//std::cout << "First letter: " << *string_ << "\n";
 			for( std::size_t i {0}; i < M && *(string_+i) != value_type(0); ++i) {
 				std::cout << *(string_+i);
+			}
+			std::cout << "\n";
+			for( std::size_t i {0}; i < M+1; ++i) {
+				std::cout << (unsigned)*(string_+i) << " ";
 			}
 			std::cout << "\n";
 		}
