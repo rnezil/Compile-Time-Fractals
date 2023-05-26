@@ -1,8 +1,9 @@
 #include "ra/cexpr_basic_string.hpp"
 #include <iostream>
 #include <stdexcept>
+#include <cstring>
 
-int main(){
+int main(){/*
 	constexpr ra::cexpr::cexpr_basic_string<char, 4> empty_string;
 	empty_string.print_ascii();
 	constexpr const char* c = "Oh hello there!!!";
@@ -29,8 +30,50 @@ int main(){
 	std::cout << "Iter string capacity: " << iter_string_capacity << "\n";
 	const char* booboo = constd_string.data();
 	std::cout << "Constd string data (const version): " << *booboo << "\n";
-	ra::cexpr::cexpr_basic_string<char, 50> clank("Why did the chicken cross the road"?);
+	ra::cexpr::cexpr_basic_string<char, 50> clank("Why did the chicken cross the road?");
 	char* doodoo = clank.data();
-	std::cout << "Clank data (non const version): " << *doodoo << "\n";
+	std::cout << "Clank data: ";
+	for( unsigned i {0}; *(doodoo+i) != char(0); ++i ){
+		std::cout << *(doodoo+i);
+	}std::cout << "\n";	
+	*(doodoo+8) = 'h';
+	*(doodoo+9) = 'i';
+	*(doodoo+10) = 's';
+	std::cout << "Clank tampered: ";
+	for( unsigned i {0}; *(doodoo+i) != char(0); ++i ){
+		std::cout << *(doodoo+i);
+	}std::cout << "\n";*/	
+	/*
+	constexpr ra::cexpr::cexpr_basic_string<char, 29> ARNIE("PUMP PUMP PUMP");
+	constexpr const char* clovis = ARNIE.begin();
+	std::cout << "Arnie says ";
+	for( unsigned i {0}; *(clovis+i) != char(0); ++i ) {
+		std::cout << *(clovis+i);
+	}std::cout << "\n";
+	*/
+	/*
+	ra::cexpr::cexpr_basic_string<char, 14> ricky("Hey bud");
+	char* bapu = ricky.begin();
+	for( unsigned i {0}; *(bapu+i) != char(0); ++i ) {
+		std::cout << *(bapu+i);
+	}std::cout << "\n";
+	*bapu = 'B';
+	*(bapu+1) = 'y';
+	*(bapu+2) = 'e';
+	for( unsigned i {0}; *(bapu+i) != char(0); ++i ) {
+		std::cout << *(bapu+i);
+	}std::cout << "\n";
+	char& greasy = ricky[4];
+	char& slimy = ricky[5];
+	char& sleazy = ricky[6];
+	std::cout << greasy << slimy << sleazy << "\n";
+	greasy = 'n';
+	slimy = 'u';
+	sleazy = 'g';
+	std::cout << greasy << slimy << sleazy << "\n";
+	*/
+	constexpr ra::cexpr::cexpr_basic_string<char, 69> nah("Oh nah son");
+	constexpr const char& sonnyboy = nah[0];
+	std::cout << sonnyboy << "\n";
 	return 0;
 }

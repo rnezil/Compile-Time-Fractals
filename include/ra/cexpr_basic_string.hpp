@@ -7,6 +7,8 @@
 #include <cstddef>
 #include <iostream>
 #include <stdexcept>
+#include <cstring>
+#include <cassert>
 
 namespace ra::cexpr {
 	//std::size_t represents a size in bytes that is the maximum size 
@@ -39,7 +41,7 @@ namespace ra::cexpr {
 		using const_iterator = const_pointer;
 
 		//Creates an empty string
-		constexpr cexpr_basic_string() : string_{""} {}
+		constexpr cexpr_basic_string() : string_{""}, mutator_ {nullptr} {}
 
 		//Copy constructor
 		constexpr cexpr_basic_string( const cexpr_basic_string& )= default;
@@ -51,7 +53,7 @@ namespace ra::cexpr {
 		~cexpr_basic_string() = default;
 
 		//Creates a string with the contents given by the null-terminated character array pointed to by s. If the string does not have sufficient capacity to hold the character data provided, throw an exception of type std::run_error
-		constexpr cexpr_basic_string( const value_type* s ) : string_ {s} {
+		constexpr cexpr_basic_string( const value_type* s ) : string_ {s}, mutator_ {nullptr} {
 			size_type i {0};
 			while( (i < M+1) && (*(s+i) != value_type(0)) ) {
 				++i;
@@ -61,7 +63,7 @@ namespace ra::cexpr {
 			}	
 		}	
 
-		constexpr cexpr_basic_string( const_iterator first, const_iterator last ): string_ {first} {
+		constexpr cexpr_basic_string( const_iterator first, const_iterator last ): string_ {first}, mutator_ {nullptr} {
 			size_type i {0};
 			while( (i < M+1) && (first + i != last) ){
 				++i;
@@ -85,10 +87,81 @@ namespace ra::cexpr {
 		}
 		
 		value_type* data() {
-			
+			if( mutator_ == nullptr ) {
+				size_type i {0};
+				while( *(string_ + i) != value_type(0) ) {
+					array_[i] = *(string_ + i);
+					++i;
+				}
+				array_[i] = value_type(0);
+				mutator_ = &array_[0];
+				string_ = mutator_;
+			}
+			return mutator_;
 		}
 
 		const value_type* data() const { return string_; }
+
+		constexpr iterator begin() { return mutator_; }	
+
+		constexpr const_iterator begin() const { return string_; }
+
+		constexpr iterator end() {
+			if( mutator_ == nullptr ){
+				return mutator_;
+			}else{
+				return mutator_ + size();
+			}
+		}
+		
+		constexpr const_iterator end() const { return string_ + size();	}
+
+		constexpr reference operator[](size_type i) {
+			assert( i >= 0 && i <= size() );
+			if( mutator_ == nullptr ){
+				return mutator_;
+			}else{
+				return *( mutator_ + i );
+			}
+		}
+
+		constexpr const_reference operator[](size_type i) const {
+			assert( i >= 0 && i <= size() );
+			return *( string_ + i );
+		}
+
+		constexpr void push_back( const T& x ){
+			//can never 'actually' be called at compile time
+			assert( size() != capacity() );
+			if( mutator_ != nullptr ){
+				*(mutator_ + size()) = x;
+				*(mutator_ + size() + 1) = value_type(0); 
+			}
+		}
+
+		constexpr void pop_back(){
+			if( size() == 0 ){
+				throw std::runtime_error {"Ain't nuthin' worth poppin' off an empty string brother"};
+			}
+			
+			if( mutator_ != nullptr ){
+				*(mutator_ + size() - 1) = value_type(0);
+			}
+		}
+
+		constexpr cexpr_basic_string& append( const value_type* s ) {
+			assert( s != nullptr );
+			size_type i {0};
+			while( *(s + i) != value_type(0) ){
+				++i;
+			}
+			
+			if( size() + i <= M ){
+				throw std::runtime_error {"Wide load error"};
+			}
+
+			if( mutator_ != nullptr ){
+				for( size_type j {0}; 
 
 		//Function for debugging
 		void print_ascii() const {
@@ -104,6 +177,8 @@ namespace ra::cexpr {
 	private:
 		//Underlying storage member
 		const_pointer string_;
+		pointer mutator_;
+		value_type array_[M+1] = {""};
 	};
 
 	template<std::size_t M>

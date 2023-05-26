@@ -1,6 +1,9 @@
 #Specify minimum cmake version requirement
 CMAKE_MINIMUM_REQUIRED(VERSION 3.1 FATAL_ERROR)
 
+#Require clang compiler
+SET(CMAKE_CXX_COMPILER "/opt/sde/bin/clang++" CACHE STRING "C++ compiler" FORCE)
+
 #Specify project name and languages
 project(string LANGUAGES CXX)
 
@@ -17,7 +20,7 @@ set(string_headers ${CMAKE_CURRENT_SOURCE_DIR}/include/ra/cexpr_basic_string.hpp
 add_executable(test_cexpr_basic_string ${CMAKE_CURRENT_SOURCE_DIR}/app/test_cexpr_basic_string.cpp ${string_headers})
 
 #Find Catch2 package
-find_package(Catch2 REQUIRED)
+#find_package(Catch2 REQUIRED)
 
 #Include Catch2 header
-include(Catch)
+#include(Catch)
