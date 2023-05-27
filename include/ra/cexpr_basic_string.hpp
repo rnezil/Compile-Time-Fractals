@@ -41,7 +41,7 @@ namespace ra::cexpr {
 		using const_iterator = const_pointer;
 
 		//Creates an empty string
-		constexpr cexpr_basic_string() {}
+		constexpr cexpr_basic_string() : array_() {}
 
 		//Copy constructor
 		constexpr cexpr_basic_string( const cexpr_basic_string& )= default;
@@ -87,7 +87,6 @@ namespace ra::cexpr {
 				++i;
 			}
 			array_[i] = value_type {0};
-			//add guards for aliasing, ie if first == last
 		}
 
 		static constexpr size_type max_size() { return M; }
@@ -130,7 +129,10 @@ namespace ra::cexpr {
 		}
 
 		constexpr void push_back( const T& x ){
-			assert( size() != capacity() );
+			if( size() == capacity() ){
+				throw std::runtime_error {"Wide load error"};
+			}
+
 			array_[size()] = x;
 			array_[size() + 1] = value_type(0);
 		}
@@ -173,7 +175,7 @@ namespace ra::cexpr {
 			std::cout << "\n";
 		}
 	private:
-		value_type array_[M+1] = {""};
+		value_type array_[M+1];
 	};
 
 	template<std::size_t M>

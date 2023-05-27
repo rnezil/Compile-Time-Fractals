@@ -80,6 +80,48 @@ int main(){
 	constexpr string blanky(binky, boinky);
 	std::cout << "[" << *binky << ", " << *boinky << "]\n";
 	blanky.print_ascii();
+
+	//tests constructor wide load error
+/*	constexpr ra::cexpr::cexpr_string<20> just_right("01234567890123456789");
+	just_right.print_ascii();
+	const char* greg = "0123456789";
+	const char* ory = greg + 6;
+	const ra::cexpr::cexpr_string<6> gregory(greg, ory);
+	gregory.print_ascii();
+	const ra::cexpr::cexpr_string<5> GREGORYYYY(greg, ory);
+	ra::cexpr::cexpr_basic_string<char, 20> big_mother("012345678901234567890");
+*/
+	//tests push wide load error
+/*	ra::cexpr::cexpr_string<5> jah("1234");
+	jah.print_ascii();
+	jah.push_back('5');
+	jah.print_ascii();
+	jah.push_back('6');
+	*/
+
+	//test pop error
+/*	ra::cexpr::cexpr_string<3> harvey;
+	harvey.print_ascii();
+	harvey.pop_back();
+	*/
+/*	ra::cexpr::cexpr_string<1> tate("L");
+	tate.print_ascii();
+	tate.pop_back();
+	tate.print_ascii();
+	tate.pop_back();
+	*/
+/*	ra::cexpr::cexpr_string<0> homer("");
+	homer.print_ascii();
+	*/
+	
+	//tests append function
+	ra::cexpr::cexpr_string<5> donny("Wall");
+	const char* excla = "!";
+	donny.append(excla).print_ascii();
+	donny.pop_back();
+	donny.print_ascii();
+	const char* exclas = "!!";
+	donny.append(exclas);
 	return 0;
 }
 
