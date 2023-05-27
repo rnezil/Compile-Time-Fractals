@@ -57,7 +57,8 @@ namespace ra::cexpr {
 			size_type i {0};
 			while( (i < M+1) && (*(s+i) != value_type(0)) ) {
 				++i;
-			}//prototype oversize check
+			}
+
 			if( i == M+1 ){
 				throw std::runtime_error {"Wide load error"};
 			}	
@@ -75,13 +76,13 @@ namespace ra::cexpr {
 			while( (i < M+1) && (first + i != last) ){
 				++i;
 			}
+
 			if( i == M+1 ){
 				throw std::runtime_error {"Wide load error"};
 			}
 
-
 			i = 0;
-			while( *(first + i) != value_type(0) ) {
+			while( first + i != last ) {
 				array_[i] = *(first + i);
 				++i;
 			}
@@ -159,6 +160,7 @@ namespace ra::cexpr {
 			array_[size()] = value_type(0);//ensure null-terminated
 			return *this;
 		}
+
 		//Function for debugging
 		void print_ascii() const {
 			for( std::size_t i {0}; i < M && array_[i]!= value_type(0); ++i) {
@@ -171,9 +173,6 @@ namespace ra::cexpr {
 			std::cout << "\n";
 		}
 	private:
-		//Underlying storage member
-		//const_pointer string_;
-		//pointer mutator_;
 		value_type array_[M+1] = {""};
 	};
 

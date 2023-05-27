@@ -69,6 +69,17 @@ int main(){
 	string ricky("Keep off my da");
 	const char* bubbles = "mn grass!!!";
 	(ricky.append(bubbles)).print_ascii();
+
+	//tests cexpr_string hotkey
+	constexpr ra::cexpr::cexpr_string<30> monkey("bananas bananas bananas");
+	monkey.print_ascii();
+
+	//tests iterator based constructor
+	constexpr const char* binky = "Blindsided mate";
+	constexpr const char* boinky = binky+9;
+	constexpr string blanky(binky, boinky);
+	std::cout << "[" << *binky << ", " << *boinky << "]\n";
+	blanky.print_ascii();
 	return 0;
 }
 
