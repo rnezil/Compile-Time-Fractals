@@ -41,7 +41,7 @@ namespace ra::cexpr {
 		using const_iterator = const_pointer;
 
 		//Creates an empty string
-		constexpr cexpr_basic_string()/* : string_{""}, mutator_ {nullptr}*/ {}
+		constexpr cexpr_basic_string() {}
 
 		//Copy constructor
 		constexpr cexpr_basic_string( const cexpr_basic_string& )= default;
@@ -53,7 +53,7 @@ namespace ra::cexpr {
 		~cexpr_basic_string() = default;
 
 		//Creates a string with the contents given by the null-terminated character array pointed to by s. If the string does not have sufficient capacity to hold the character data provided, throw an exception of type std::run_error
-		constexpr cexpr_basic_string( const value_type* s ) :/* string_ {s}, mutator_ { nullptr },*/ array_() {
+		constexpr cexpr_basic_string( const value_type* s ) : array_() {
 			size_type i {0};
 			while( (i < M+1) && (*(s+i) != value_type(0)) ) {
 				++i;
@@ -70,7 +70,7 @@ namespace ra::cexpr {
 			array_[i] = value_type {0};
 		}	
 
-		constexpr cexpr_basic_string( const_iterator first, const_iterator last ):/* string_ {first}, mutator_ {nullptr},*/ array_() {
+		constexpr cexpr_basic_string( const_iterator first, const_iterator last ): array_() {
 			size_type i {0};
 			while( (i < M+1) && (first + i != last) ){
 				++i;
@@ -100,68 +100,46 @@ namespace ra::cexpr {
 			}
 			return i;
 		}
-		/*
-		value_type* data() {
-			if( mutator_ == nullptr ) {
-				size_type i {0};
-				while( *(string_ + i) != value_type(0) ) {
-					array_[i] = *(string_ + i);
-					++i;
-				}
-				array_[i] = value_type(0);
-				mutator_ = &array_[0];
-				string_ = mutator_;
-			}
-			return mutator_;
-		}
-
-		const value_type* data() const { return string_; }
-
-		constexpr iterator begin() { return mutator_; }	
-
-		constexpr const_iterator begin() const { return string_; }
-
-		constexpr iterator end() {
-			if( mutator_ == nullptr ){
-				return mutator_;
-			}else{
-				return mutator_ + size();
-			}
-		}
 		
-		constexpr const_iterator end() const { return string_ + size();	}
+		value_type* data() {
+			return array_;
+		}
+
+		const value_type* data() const { return array_; }
+
+		//kind of sketchy because it should be impossible to get a 
+		//non-const pointer to a constexpr object
+		constexpr iterator begin() { return array_; }	
+
+		constexpr const_iterator begin() const { return array_; }
+		
+		//sketchy for same reasons as non-const begin()
+		constexpr iterator end() { return array_ + size(); }
+		
+		constexpr const_iterator end() const { return array_ + size();	}
 
 		constexpr reference operator[](size_type i) {
 			assert( i >= 0 && i <= size() );
-			if( mutator_ == nullptr ){
-				return mutator_;
-			}else{
-				return *( mutator_ + i );
-			}
+			return array_[i];
 		}
 
 		constexpr const_reference operator[](size_type i) const {
 			assert( i >= 0 && i <= size() );
-			return *( string_ + i );
+			return array_[i];
 		}
 
 		constexpr void push_back( const T& x ){
-			//can never 'actually' be called at compile time
 			assert( size() != capacity() );
-			if( mutator_ != nullptr ){
-				*(mutator_ + size()) = x;
-				*(mutator_ + size() + 1) = value_type(0); 
-			}
+			array_[size()] = x;
+			array_[size() + 1] = value_type(0);
 		}
 
 		constexpr void pop_back(){
 			if( size() == 0 ){
 				throw std::runtime_error {"Ain't nuthin' worth poppin' off an empty string brother"};
 			}
-			
-			if( mutator_ != nullptr ){
-				*(mutator_ + size() - 1) = value_type(0);
-			}
+
+			array_[size() - 1] = value_type(0);
 		}
 
 		constexpr cexpr_basic_string& append( const value_type* s ) {
@@ -171,13 +149,16 @@ namespace ra::cexpr {
 				++i;
 			}
 			
-			if( size() + i <= M ){
+			if( size() + i > M ){
 				throw std::runtime_error {"Wide load error"};
 			}
-
-			if( mutator_ != nullptr ){
-				for( size_type j {0}; 
-*/
+			
+			for( size_type j {0}; j < i; ++j ){
+				push_back( *(s + j) );
+			}
+			array_[size()] = value_type(0);//ensure null-terminated
+			return *this;
+		}
 		//Function for debugging
 		void print_ascii() const {
 			for( std::size_t i {0}; i < M && array_[i]!= value_type(0); ++i) {
