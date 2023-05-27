@@ -3,7 +3,20 @@
 #include <stdexcept>
 #include <cstring>
 
-int main(){/*
+int main(){
+	constexpr ra::cexpr::cexpr_basic_string<char, 4> empty_string;
+	empty_string.print_ascii();
+	constexpr ra::cexpr::cexpr_basic_string<char, 20> a_string("Oh hello there!");
+	a_string.print_ascii();
+	constexpr std::size_t a_string_size = a_string.size();
+	std::cout << "Size of above string: " << a_string_size << "\n";
+	constexpr std::size_t empty_string_size = empty_string.size();
+	std::cout << "Size of an empty string: " << empty_string.size() << "\n";
+	return 0;
+}
+
+/*
+int main(){
 	constexpr ra::cexpr::cexpr_basic_string<char, 4> empty_string;
 	empty_string.print_ascii();
 	constexpr const char* c = "Oh hello there!!!";
@@ -71,9 +84,9 @@ int main(){/*
 	slimy = 'u';
 	sleazy = 'g';
 	std::cout << greasy << slimy << sleazy << "\n";
-	*/
-	constexpr ra::cexpr::cexpr_basic_string<char, 69> nah("Oh nah son");
-	constexpr const char& sonnyboy = nah[0];
-	std::cout << sonnyboy << "\n";
+	
+	//constexpr ra::cexpr::cexpr_basic_string<char, 69> nah("Oh nah son");
+	//constexpr const char& sonnyboy = nah[0];
+	//std::cout << sonnyboy << "\n";
 	return 0;
-}
+}*/

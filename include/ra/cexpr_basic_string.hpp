@@ -41,7 +41,7 @@ namespace ra::cexpr {
 		using const_iterator = const_pointer;
 
 		//Creates an empty string
-		constexpr cexpr_basic_string() : string_{""}, mutator_ {nullptr} {}
+		constexpr cexpr_basic_string()/* : string_{""}, mutator_ {nullptr}*/ {}
 
 		//Copy constructor
 		constexpr cexpr_basic_string( const cexpr_basic_string& )= default;
@@ -53,7 +53,7 @@ namespace ra::cexpr {
 		~cexpr_basic_string() = default;
 
 		//Creates a string with the contents given by the null-terminated character array pointed to by s. If the string does not have sufficient capacity to hold the character data provided, throw an exception of type std::run_error
-		constexpr cexpr_basic_string( const value_type* s ) : string_ {s}, mutator_ {nullptr} {
+		constexpr cexpr_basic_string( const value_type* s ) :/* string_ {s}, mutator_ { nullptr },*/ array_() {
 			size_type i {0};
 			while( (i < M+1) && (*(s+i) != value_type(0)) ) {
 				++i;
@@ -61,9 +61,16 @@ namespace ra::cexpr {
 			if( i == M+1 ){
 				throw std::runtime_error {"Wide load error"};
 			}	
+
+			i = 0;
+			while( *(s + i) != value_type(0) ) {
+				array_[i] = *(s + i);
+				++i;
+			}
+			array_[i] = value_type {0};
 		}	
 
-		constexpr cexpr_basic_string( const_iterator first, const_iterator last ): string_ {first}, mutator_ {nullptr} {
+		constexpr cexpr_basic_string( const_iterator first, const_iterator last ):/* string_ {first}, mutator_ {nullptr},*/ array_() {
 			size_type i {0};
 			while( (i < M+1) && (first + i != last) ){
 				++i;
@@ -71,6 +78,14 @@ namespace ra::cexpr {
 			if( i == M+1 ){
 				throw std::runtime_error {"Wide load error"};
 			}
+
+
+			i = 0;
+			while( *(first + i) != value_type(0) ) {
+				array_[i] = *(first + i);
+				++i;
+			}
+			array_[i] = value_type {0};
 			//add guards for aliasing, ie if first == last
 		}
 
@@ -80,12 +95,12 @@ namespace ra::cexpr {
 
 		constexpr size_type size() const {
 			size_type i {0};
-			while( *(string_ + i) != value_type(0) ) {
+			while( array_[i] != value_type(0) ) {
 				++i;
 			}
 			return i;
 		}
-		
+		/*
 		value_type* data() {
 			if( mutator_ == nullptr ) {
 				size_type i {0};
@@ -162,22 +177,22 @@ namespace ra::cexpr {
 
 			if( mutator_ != nullptr ){
 				for( size_type j {0}; 
-
+*/
 		//Function for debugging
 		void print_ascii() const {
-			for( std::size_t i {0}; i < M && *(string_+i) != value_type(0); ++i) {
-				std::cout << *(string_+i);
+			for( std::size_t i {0}; i < M && array_[i]!= value_type(0); ++i) {
+				std::cout << array_[i];
 			}
 			std::cout << "\n";
 			for( std::size_t i {0}; i < M+1; ++i) {
-				std::cout << (unsigned)*(string_+i) << " ";
+				std::cout << (unsigned)array_[i] << " ";
 			}
 			std::cout << "\n";
 		}
 	private:
 		//Underlying storage member
-		const_pointer string_;
-		pointer mutator_;
+		//const_pointer string_;
+		//pointer mutator_;
 		value_type array_[M+1] = {""};
 	};
 
