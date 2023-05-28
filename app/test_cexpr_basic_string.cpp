@@ -144,6 +144,12 @@ int main(){
 		std::cout << buffer[i];
 	}
 	std::cout << "\n";
+
+	//test clear function
+	string dookie("Ewwwww gross man");
+	dookie.print_ascii();
+	dookie.clear();
+	dookie.print_ascii();
 	return 0;
 }
 

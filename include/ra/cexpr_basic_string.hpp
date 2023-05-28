@@ -177,6 +177,14 @@ namespace ra::cexpr {
 			return *this;
 		}
 
+		constexpr void clear() {
+			if( size() != 0 ){
+				for( size_type i { size() }; i != 0; --i ){
+					pop_back();
+				}
+			}
+		}
+
 		//Function for debugging
 		void print_ascii() const {
 			for( std::size_t i {0}; i < M && array_[i]!= value_type(0); ++i) {
