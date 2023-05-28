@@ -159,7 +159,20 @@ namespace ra::cexpr {
 			for( size_type j {0}; j < i; ++j ){
 				push_back( *(s + j) );
 			}
-			array_[size()] = value_type(0);//ensure null-terminated
+			return *this;
+		}
+
+		template<size_type OtherM>
+		constexpr cexpr_basic_string& append( const cexpr_basic_string<value_type, OtherM>& other ) {
+			if( size() + other.size() > M ){
+				throw std::runtime_error {"Wide load error"};
+			}
+
+			size_type i {0};
+			while( i < other.size() ){
+				push_back( other[i] );
+				++i;
+			}
 			return *this;
 		}
 

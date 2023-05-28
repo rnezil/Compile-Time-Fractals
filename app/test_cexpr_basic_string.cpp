@@ -120,8 +120,18 @@ int main(){
 	donny.append(excla).print_ascii();
 	donny.pop_back();
 	donny.print_ascii();
-	const char* exclas = "!!";
-	donny.append(exclas);
+	//const char* exclas = "!!";
+	//donny.append(exclas);
+	ra::cexpr::cexpr_string<10> barrack("Obama");
+	constexpr ra::cexpr::cexpr_string<12> osama("Care!");
+	constexpr ra::cexpr::cexpr_string<400> saddam("Stare!");
+	barrack.append(osama).print_ascii();
+	barrack.pop_back();
+	barrack.pop_back();
+	barrack.pop_back();
+	barrack.pop_back();
+	barrack.pop_back();
+	barrack.append(saddam).print_ascii();
 	return 0;
 }
 
