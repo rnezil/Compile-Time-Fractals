@@ -131,7 +131,19 @@ int main(){
 	barrack.pop_back();
 	barrack.pop_back();
 	barrack.pop_back();
-	barrack.append(saddam).print_ascii();
+	//barrack.append(saddam).print_ascii();
+
+	//test to_string helper function
+	char buffer[10];
+       	char* end;
+	char** ptr = &end;
+	std::size_t num {133742069};
+	std::cout << "Wrote " << ra::cexpr::to_string( num, buffer, 9, ptr )
+		<< " characters: ";
+	for( std::size_t i {0}; &buffer[i] != end; ++i ){
+		std::cout << buffer[i];
+	}
+	std::cout << "\n";
 	return 0;
 }
 

@@ -9,6 +9,7 @@
 #include <stdexcept>
 #include <cstring>
 #include <cassert>
+#include <cmath>
 
 namespace ra::cexpr {
 	//std::size_t represents a size in bytes that is the maximum size 
@@ -200,5 +201,58 @@ namespace ra::cexpr {
 	//number of characters written to the buffer, excluding the null character, is returned
 	//if end is non-null, *end is set to point to the null character at the end of the converted string
 	//if buffer provided does not have sufficient capacity to hold the string resulting from the conversion process, throw std::runtime_error
-	constexpr std::size_t to_string( std::size_t n, char* buffer, std::size_t size, char** end );
+	constexpr std::size_t to_string( std::size_t n, char* buffer, std::size_t size, char** end ) {
+		//converts integer n to nullterm string
+		//result stored at *buffer
+		//buffer has size = size (the function parameter)
+		//returns number of characters written to the buffer
+		//if end is not null, *end set to point at null character at end of buffer
+		/*the below algorithm sample will be employed
+	std::size_t n {369};
+	char hundreds;
+	char tens;
+	char ones;
+	std::size_t h;
+	std::size_t t;
+	std::size_t o;
+	o = (n%10)/1;
+	t = (n%100)/10;
+	h = (n%1000)/100;
+	std::cout << h << t << o << "\n";
+	ones = (char)(48+o);
+	tens = (char)(48+t);
+	hundreds = (char)(48+h);
+	*/
+		std::size_t log_digit_count {10};
+		while( n >= log_digit_count ){
+			log_digit_count *= 10;
+		}
+		//if n<10 then log_digit_count = 10
+		//if n<100 then log_digit_count = 100
+		//if n<1000 then log_digit_count = 1000
+		//etc.
+		
+		//extract actual digit count
+		std::size_t digit_count = (std::size_t)std::log10( log_digit_count );
+
+		//check that buffer has enough space to hold all the digits
+		if( digit_count > size ){
+			throw std::runtime_error {"Not enough space in char buffer -- number too big."};
+		}
+
+		//place ascii coded digits into the buffer
+		for( std::size_t i {0}; i < digit_count; ++i ){
+			*(buffer + i) = (n % log_digit_count) / (log_digit_count / 10) + 48;
+			log_digit_count /= 10;
+		}
+		//add null termination to the buffer, completing the string
+		*(buffer + digit_count) = char(0);
+
+		//make *end point to the null terminus
+		if( end != nullptr ){
+			*end = buffer + digit_count;
+		}
+
+		return digit_count;
+	}
 }
