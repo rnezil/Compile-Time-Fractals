@@ -9,7 +9,6 @@
 #include <stdexcept>
 #include <cstring>
 #include <cassert>
-#include <cmath>
 
 namespace ra::cexpr {
 	//std::size_t represents a size in bytes that is the maximum size 
@@ -241,7 +240,50 @@ namespace ra::cexpr {
 		//etc.
 		
 		//extract actual digit count
-		std::size_t digit_count = (std::size_t)std::log10( log_digit_count );
+		std::size_t digit_count = 1;// = (std::size_t)std::log10( log_digit_count );
+		for( std::size_t i {1}; log_digit_count / i != 10; i *= 10 ){
+			++digit_count;
+		}
+		/*switch( log_digit_count ){
+			case 10:
+				digit_count = 1;
+			case 100:
+				digit_count = 2;
+			case 1000:
+				digit_count = 3;
+			case 10000:
+				digit_count = 4;
+			case 100000:
+				digit_count = 5;
+			case 1000000:
+				digit_count = 6;
+			case 10000000:
+				digit_count = 7;
+			case 100000000:
+				digit_count = 8;
+			case 1000000000:
+				digit_count = 9;
+			case 10000000000:
+				digit_count = 10;
+			case 100000000000:
+				digit_count = 11;
+			case 1000000000000:
+				digit_count = 12;
+			case 10000000000000:
+				digit_count = 13;
+			case 100000000000000:
+				digit_count = 14;
+			case 1000000000000000:
+				digit_count = 15;
+			case 10000000000000000:
+				digit_count = 16;
+			case 100000000000000000:
+				digit_count = 17;
+			case 1000000000000000000:
+				digit_count = 18;
+			default:
+				digit_count = 19;
+		}*/
 
 		//check that buffer has enough space to hold all the digits
 		if( digit_count > size ){

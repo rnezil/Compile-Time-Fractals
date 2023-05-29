@@ -1,8 +1,8 @@
 #Specify minimum cmake version requirement
 CMAKE_MINIMUM_REQUIRED(VERSION 3.1 FATAL_ERROR)
 
-#Require clang compiler
-SET(CMAKE_CXX_COMPILER "/opt/sde/bin/clang++" CACHE STRING "C++ compiler" FORCE)
+#Set compiler flags variable to allow for longer loops
+set(EXTRA_COMPILE_FLAGS "-fconstexpr-steps=1000000000")
 
 #Specify project name and languages
 project(string LANGUAGES CXX)
@@ -13,11 +13,18 @@ project(string LANGUAGES CXX)
 #Globally include 'include' directory
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
-#Create variables for cexpr_basic_string header
+#Create variable for cexpr_basic_string header
 set(string_headers ${CMAKE_CURRENT_SOURCE_DIR}/include/ra/cexpr_basic_string.hpp)
 
-#Add executable target
+#Create vrariable for cexpr_mandelbrot header
+set(mandelbrot_headers ${CMAKE_CURRENT_SOURCE_DIR}/include/ra/mandelbrot.hpp)
+
+#Add executable targets
 add_executable(test_cexpr_basic_string ${CMAKE_CURRENT_SOURCE_DIR}/app/test_cexpr_basic_string.cpp ${string_headers})
+add_executable( test_mandelbrot ${CMAKE_CURRENT_SOURCE_DIR}/app/test_mandelbrot.cpp ${mandelbrot_headers})
+
+#Make sure mandelbrot gets compiler flags for longer loops
+set_source_files_properties(${CMAKE_CURRENT_SOURCE_DIR}/app/test_mandelbrot.cpp PROPERTIES COMPILE_FLAGS ${EXTRA_COMPILE_FLAGS})
 
 #Find Catch2 package
 #find_package(Catch2 REQUIRED)
