@@ -129,20 +129,30 @@ namespace ra::cexpr {
 		}
 
 		constexpr void push_back( const T& x ){
-			if( size() == capacity() ){
+			if( !has_size_var_ ){
+				size_ = size();
+				has_size_var_ = true;
+			}
+			
+			if( size_ == capacity() ){
 				throw std::runtime_error {"Wide load error"};
 			}
 
-			array_[size()] = x;
-			array_[size() + 1] = value_type(0);
+			array_[size_] = x;
+			array_[++size_] = value_type(0);
 		}
 
 		constexpr void pop_back(){
-			if( size() == 0 ){
+			if( !has_size_var_ ){
+				size_ = size();
+				has_size_var_ = true;
+			}
+
+			if( size_ == 0 ){
 				throw std::runtime_error {"Ain't nuthin' worth poppin' off an empty string brother"};
 			}
 
-			array_[size() - 1] = value_type(0);
+			array_[--size_] = value_type(0);
 		}
 
 		constexpr cexpr_basic_string& append( const value_type* s ) {
@@ -151,8 +161,13 @@ namespace ra::cexpr {
 			while( *(s + i) != value_type(0) ){
 				++i;
 			}
+
+			if( !has_size_var_ ){
+				size_ = size();
+				has_size_var_ = true;
+			}
 			
-			if( size() + i > M ){
+			if( size_ + i > M ){
 				throw std::runtime_error {"Wide load error"};
 			}
 			
@@ -177,10 +192,16 @@ namespace ra::cexpr {
 		}
 
 		constexpr void clear() {
-			if( size() != 0 ){
+			if( !has_size_var_ ){
+				size_ = size();
+				has_size_var_ = true;
+			}
+
+			if( size_ != 0 ){
 				for( size_type i { size() }; i != 0; --i ){
 					pop_back();
 				}
+				size_ = 0;
 			}
 		}
 
@@ -197,6 +218,8 @@ namespace ra::cexpr {
 		}
 	private:
 		value_type array_[M+1];
+		size_type size_ {0};
+		bool has_size_var_ {false};
 	};
 
 	template<std::size_t M>
@@ -244,46 +267,6 @@ namespace ra::cexpr {
 		for( std::size_t i {1}; log_digit_count / i != 10; i *= 10 ){
 			++digit_count;
 		}
-		/*switch( log_digit_count ){
-			case 10:
-				digit_count = 1;
-			case 100:
-				digit_count = 2;
-			case 1000:
-				digit_count = 3;
-			case 10000:
-				digit_count = 4;
-			case 100000:
-				digit_count = 5;
-			case 1000000:
-				digit_count = 6;
-			case 10000000:
-				digit_count = 7;
-			case 100000000:
-				digit_count = 8;
-			case 1000000000:
-				digit_count = 9;
-			case 10000000000:
-				digit_count = 10;
-			case 100000000000:
-				digit_count = 11;
-			case 1000000000000:
-				digit_count = 12;
-			case 10000000000000:
-				digit_count = 13;
-			case 100000000000000:
-				digit_count = 14;
-			case 1000000000000000:
-				digit_count = 15;
-			case 10000000000000000:
-				digit_count = 16;
-			case 100000000000000000:
-				digit_count = 17;
-			case 1000000000000000000:
-				digit_count = 18;
-			default:
-				digit_count = 19;
-		}*/
 
 		//check that buffer has enough space to hold all the digits
 		if( digit_count > size ){

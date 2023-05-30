@@ -97,19 +97,19 @@ int main(){
 	jah.push_back('5');
 	jah.print_ascii();
 	jah.push_back('6');
-	*/
+*/	
 
 	//test pop error
 /*	ra::cexpr::cexpr_string<3> harvey;
 	harvey.print_ascii();
 	harvey.pop_back();
-	*/
+*/	
 /*	ra::cexpr::cexpr_string<1> tate("L");
 	tate.print_ascii();
 	tate.pop_back();
 	tate.print_ascii();
 	tate.pop_back();
-	*/
+*/	
 /*	ra::cexpr::cexpr_string<0> homer("");
 	homer.print_ascii();
 	*/
