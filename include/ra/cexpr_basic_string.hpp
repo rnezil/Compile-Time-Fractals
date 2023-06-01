@@ -41,7 +41,7 @@ namespace ra::cexpr {
 		using const_iterator = const_pointer;
 
 		//Creates an empty string
-		constexpr cexpr_basic_string() : array_() {}
+		constexpr cexpr_basic_string() : array_(), size_ {0} {}
 
 		//Copy constructor
 		constexpr cexpr_basic_string( const cexpr_basic_string& )= default;
@@ -53,35 +53,42 @@ namespace ra::cexpr {
 		~cexpr_basic_string() = default;
 
 		//Creates a string with the contents given by the null-terminated character array pointed to by s. If the string does not have sufficient capacity to hold the character data provided, throw an exception of type std::run_error
-		constexpr cexpr_basic_string( const value_type* s ) : array_() {
+		constexpr cexpr_basic_string( const value_type* s ) : array_(), size_() {
+			//determine length of input string
 			size_type i {0};
 			while( (i < M+1) && (*(s+i) != value_type(0)) ) {
 				++i;
 			}
 
+			//throw error if input string is too long
 			if( i == M+1 ){
 				throw std::runtime_error {"Wide load error"};
-			}	
+			}
+			
+			//set size member
+			size_ = i;
 
+			//fill array
 			i = 0;
-			while( *(s + i) != value_type(0) ) {
+			while( i < size_ ) {
 				array_[i] = *(s + i);
 				++i;
-			}
-			array_[i] = value_type {0};
+			} array_[size_] = value_type(0);
 		}	
 
-		constexpr cexpr_basic_string( const_iterator first, const_iterator last ): array_() {
-			size_type i {0};
+		constexpr cexpr_basic_string( const_iterator first, const_iterator last ): array_(), size_() {
+			/*size_type i {0};
 			while( (i < M+1) && (first + i != last) ){
 				++i;
-			}
+			}*/
 
-			if( i == M+1 ){
+			if( last - first > M ){
 				throw std::runtime_error {"Wide load error"};
 			}
 
-			i = 0;
+			//write a test program to see if pointers point to bytes or words, things will be different for wchar_t probably
+
+			size_type i {0};
 			while( first + i != last ) {
 				array_[i] = *(first + i);
 				++i;
