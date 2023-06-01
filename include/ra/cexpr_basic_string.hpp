@@ -77,71 +77,50 @@ namespace ra::cexpr {
 		}	
 
 		constexpr cexpr_basic_string( const_iterator first, const_iterator last ): array_(), size_() {
-			/*size_type i {0};
-			while( (i < M+1) && (first + i != last) ){
-				++i;
-			}*/
+			if( last < first ){
+				throw std::runtime_error {"Wide load error"};
+			}
 
 			if( last - first > M ){
 				throw std::runtime_error {"Wide load error"};
 			}
 
-			//write a test program to see if pointers point to bytes or words, things will be different for wchar_t probably
-
-			size_type i {0};
-			while( first + i != last ) {
-				array_[i] = *(first + i);
-				++i;
-			}
-			array_[i] = value_type {0};
+			size_ = last - first;
+			for( size_type i {0}; i < size_; ++i ){
+				array_[i] = *(first + i );
+			}array_[size_] = value_type(0);
 		}
 
 		static constexpr size_type max_size() { return M; }
 
 		constexpr size_type capacity() const { return M; }
 
-		constexpr size_type size() const {
-			size_type i {0};
-			while( array_[i] != value_type(0) ) {
-				++i;
-			}
-			return i;
-		}
+		constexpr size_type size() const { return size_; }
 		
-		value_type* data() {
-			return array_;
-		}
+		value_type* data() { return array_; }
 
 		const value_type* data() const { return array_; }
 
-		//kind of sketchy because it should be impossible to get a 
-		//non-const pointer to a constexpr object
 		constexpr iterator begin() { return array_; }	
 
 		constexpr const_iterator begin() const { return array_; }
 		
-		//sketchy for same reasons as non-const begin()
-		constexpr iterator end() { return array_ + size(); }
+		constexpr iterator end() { return array_ + size_; }
 		
-		constexpr const_iterator end() const { return array_ + size();	}
+		constexpr const_iterator end() const { return array_ + size_; }
 
 		constexpr reference operator[](size_type i) {
-			assert( i >= 0 && i <= size() );
+			assert( i >= 0 && i <= size_ );
 			return array_[i];
 		}
 
 		constexpr const_reference operator[](size_type i) const {
-			assert( i >= 0 && i <= size() );
+			assert( i >= 0 && i <= size_ );
 			return array_[i];
 		}
 
 		constexpr void push_back( const T& x ){
-			if( !has_size_var_ ){
-				size_ = size();
-				has_size_var_ = true;
-			}
-			
-			if( size_ == capacity() ){
+			if( size_ == M ){
 				throw std::runtime_error {"Wide load error"};
 			}
 
@@ -150,11 +129,6 @@ namespace ra::cexpr {
 		}
 
 		constexpr void pop_back(){
-			if( !has_size_var_ ){
-				size_ = size();
-				has_size_var_ = true;
-			}
-
 			if( size_ == 0 ){
 				throw std::runtime_error {"Ain't nuthin' worth poppin' off an empty string brother"};
 			}
@@ -168,11 +142,6 @@ namespace ra::cexpr {
 			while( *(s + i) != value_type(0) ){
 				++i;
 			}
-
-			if( !has_size_var_ ){
-				size_ = size();
-				has_size_var_ = true;
-			}
 			
 			if( size_ + i > M ){
 				throw std::runtime_error {"Wide load error"};
@@ -181,36 +150,24 @@ namespace ra::cexpr {
 			for( size_type j {0}; j < i; ++j ){
 				push_back( *(s + j) );
 			}
+
 			return *this;
 		}
 
 		template<size_type OtherM>
 		constexpr cexpr_basic_string& append( const cexpr_basic_string<value_type, OtherM>& other ) {
-			if( size() + other.size() > M ){
+			if( size_ + other.size() > M ){
 				throw std::runtime_error {"Wide load error"};
 			}
 
-			size_type i {0};
-			while( i < other.size() ){
+			for( size_type i {0}; i < other.size(); ++i ){
 				push_back( other[i] );
-				++i;
 			}
+
 			return *this;
 		}
 
-		constexpr void clear() {
-			if( !has_size_var_ ){
-				size_ = size();
-				has_size_var_ = true;
-			}
-
-			if( size_ != 0 ){
-				for( size_type i { size() }; i != 0; --i ){
-					pop_back();
-				}
-				size_ = 0;
-			}
-		}
+		constexpr void clear() { while( size_ != 0 ) pop_back(); }
 
 		//Function for debugging
 		void print_ascii() const {
@@ -225,8 +182,7 @@ namespace ra::cexpr {
 		}
 	private:
 		value_type array_[M+1];
-		size_type size_ {0};
-		bool has_size_var_ {false};
+		size_type size_;
 	};
 
 	template<std::size_t M>
